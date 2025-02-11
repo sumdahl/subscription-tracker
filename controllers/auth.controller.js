@@ -38,7 +38,7 @@ export const signIn = async (req, res, next) => {
 export const signOut = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith("Bearer")) {
+    if (!authHeader?.startsWith("Bearer ")) {
       return res
         .status(400)
         .json({ success: false, message: "No token provided." });

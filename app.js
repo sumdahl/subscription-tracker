@@ -7,6 +7,7 @@ import authRouter from "./routes/auth.route.js";
 import subscriptionRouter from "./routes/subscription.route.js";
 import connectToDatabase from "./database/mongodb.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
+import { arcjetMiddleware } from "./middlewares/arcjet.middleware.js";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/subscriptions", subscriptionRouter);
 
 app.use(errorMiddleware);
+app.use(arcjetMiddleware);
 
 app.get("/", (_, res) => {
   res.send("Welcome to the world");
