@@ -40,36 +40,46 @@ export const createUser = async (username, email, password) => {
 };
 
 export const loginUser = async (email, password) => {
-  const user = await User.findOne({ email });
-  if (!user) {
-    const error = new Error("User not found.");
-    error.statusCode = 404;
-    throw error;
-  }
-  const isValidPassword = await bcrypt.compare(password, user.password);
-  if (!isValidPassword) {
-    const error = new Error("Invalid password.");
-    error.statusCode = 401;
-    throw error;
-  }
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      const error = new Error("User not found.");
+      error.statusCode = 404;
+      throw error;
+    }
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      const error = new Error("Invalid password.");
+      error.statusCode = 401;
+      throw error;
+    }
 
-  const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
-  });
-  return { token, user };
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: JWT_EXPIRES_IN,
+    });
+    return { token, user };
+  } catch (error) {
+    console.error("Error while logging the user:", error);
+    throw error;
+  }
 };
 
 export const logOutUser = async (token) => {
-  const decoded = jwt.decode(token);
-  if (!decoded) throw new Error("Invalid token");
+  try {
+    const decoded = jwt.decode(token);
+    if (!decoded) throw new Error("Invalid token");
 
-  //ensures at least 1 seconds expiry
-  const expiresIn = Math.max(1, decoded.exp - Math.floor(Date.now() / 1000));
-  if (expiresIn < 0) {
-    console.log("Expire date should be positive.");
+    //ensures at least 1 seconds expiry
+    const expiresIn = Math.max(1, decoded.exp - Math.floor(Date.now() / 1000));
+    if (expiresIn < 0) {
+      console.log("Expire date should be positive.");
+    }
+
+    await redisClient.set(token, "blacklisted", "EX", expiresIn);
+
+    return true;
+  } catch (error) {
+    console.error("Error while logging out the user:", error);
+    throw error;
   }
-
-  await redisClient.set(token, "blacklisted", "EX", expiresIn);
-
-  return true;
 };
