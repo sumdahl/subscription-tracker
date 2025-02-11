@@ -37,3 +37,23 @@ export const createUser = async (username, email, password) => {
     throw error;
   }
 };
+
+export const loginUser = async (email, password) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    const error = new Error("User not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+  const isValidPassword = await bcrypt.compare(password, user.password);
+  if (!isValidPassword) {
+    const error = new Error("Invalid password.");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+    expiresIn: JWT_EXPIRES_IN,
+  });
+  return { token, user };
+};
