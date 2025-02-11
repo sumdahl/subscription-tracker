@@ -1,4 +1,4 @@
-import { createUser, loginUser } from "../services/auth.services.js";
+import { createUser, loginUser, logOutUser } from "../services/auth.service.js";
 
 export const signUp = async (req, res, next) => {
   try {
@@ -35,4 +35,21 @@ export const signIn = async (req, res, next) => {
   }
 };
 
-export const signOut = async (req, res, next) => {};
+export const signOut = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer")) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No token provided." });
+    }
+    const token = authHeader.split(" ")[1];
+    await logOutUser(token);
+
+    res
+      .status(200)
+      .json({ success: true, message: "Logged out successfully." });
+  } catch (error) {
+    next(error);
+  }
+};
