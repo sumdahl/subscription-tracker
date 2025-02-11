@@ -1,5 +1,6 @@
 import {
   createSubscriptionService,
+  deleteAllSubscriptionService,
   deleteSubscriptionService,
   getAllSubscriptionByUserService,
 } from "../services/subscription.service.js";
@@ -52,6 +53,25 @@ export const deleteSubscription = async (req, res, next) => {
       });
     }
     return res.status(200).json({ success: true, deletedSubscription });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteAllSubscription = async (req, res, next) => {
+  try {
+    const result = await deleteAllSubscriptionService();
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No subscription found to be deleted.",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "All subscriptions are deleted sucessfully.",
+      deletedCount: result.deletedCount,
+    });
   } catch (error) {
     next(error);
   }

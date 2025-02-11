@@ -34,3 +34,13 @@ export const deleteSubscriptionService = async (subId) => {
     throw error;
   }
 };
+
+export const deleteAllSubscriptionService = async () => {
+  try {
+    const result = await Subscription.deleteMany({});
+    return result;
+  } catch (error) {
+    console.error("Error while deleting all subscription:", error);
+    throw error;
+  }
+};
