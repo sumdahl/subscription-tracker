@@ -14,7 +14,7 @@ export const authenticateUser = async (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
-    console.log("Token:", token); // Log the token
+    //console.log("Token:", token); // Log the token
 
     const isBlacklisted = await redisClient.get(token);
     if (isBlacklisted !== null) {
@@ -25,7 +25,7 @@ export const authenticateUser = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    console.log("Decoded JWT:", decoded); // Log the decoded token
+    //console.log("Decoded JWT:", decoded); // Log the decoded token
 
     // Check if the decoded token contains the user ID
     if (!decoded || !decoded.userId) {
