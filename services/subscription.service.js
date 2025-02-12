@@ -18,15 +18,16 @@ export const getUserSubscriptionService = async (userId) => {
     const allSubscription = await Subscription.find({ user: userId });
     return allSubscription;
   } catch (error) {
-    console.error("Error in getting all subscription of the user:", error);
+    console.error("Error in getting subscription of the user:", error);
     throw error;
   }
 };
 
-export const deleteSubscriptionService = async (subId) => {
+export const deleteSubscriptionService = async (subId, userId) => {
   try {
     const deletedSubscription = await Subscription.findOneAndDelete({
       _id: subId,
+      userId: userId,
     });
     return deletedSubscription;
   } catch (error) {
@@ -35,12 +36,12 @@ export const deleteSubscriptionService = async (subId) => {
   }
 };
 
-export const deleteAllSubscriptionService = async () => {
-  try {
-    const result = await Subscription.deleteMany({});
-    return result;
-  } catch (error) {
-    console.error("Error while deleting all subscription:", error);
-    throw error;
-  }
-};
+// export const deleteAllSubscriptionService = async () => {
+//   try {
+//     const result = await Subscription.deleteMany({});
+//     return result;
+//   } catch (error) {
+//     console.error("Error while deleting all subscription:", error);
+//     throw error;
+//   }
+// };
