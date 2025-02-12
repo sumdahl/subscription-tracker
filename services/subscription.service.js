@@ -13,7 +13,7 @@ export const createSubscriptionService = async (body, userId) => {
   }
 };
 
-export const getAllSubscriptionByUserService = async (userId) => {
+export const getUserSubscriptionService = async (userId) => {
   try {
     const allSubscription = await Subscription.find({ user: userId });
     return allSubscription;

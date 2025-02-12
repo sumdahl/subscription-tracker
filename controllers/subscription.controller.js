@@ -2,7 +2,7 @@ import {
   createSubscriptionService,
   deleteAllSubscriptionService,
   deleteSubscriptionService,
-  getAllSubscriptionByUserService,
+  getUserSubscriptionService,
 } from "../services/subscription.service.js";
 
 export const createSubscription = async (req, res, next) => {
@@ -23,10 +23,17 @@ export const createSubscription = async (req, res, next) => {
   }
 };
 
-export const getAllSubscriptionByUser = async (req, res, next) => {
+export const getUserSubscription = async (req, res, next) => {
   try {
-    const userId = req.params.id;
-    const allSubscription = await getAllSubscriptionByUserService(userId, res);
+    const paramId = req.params.id;
+    const userId = req.user.userId;
+    if (userId !== paramId) {
+      const error = new Error("You are not the owner of this account.");
+      error.status = 401;
+      throw error;
+    }
+
+    const allSubscription = await getUserSubscriptionService(paramId);
 
     if (allSubscription.length === 0) {
       return res.status(404).json({

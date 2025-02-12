@@ -4,7 +4,7 @@ import {
   createSubscription,
   deleteAllSubscription,
   deleteSubscription,
-  getAllSubscriptionByUser,
+  getUserSubscription,
 } from "../controllers/subscription.controller.js";
 
 const subscriptionRouter = Router();
@@ -12,7 +12,7 @@ const subscriptionRouter = Router();
 subscriptionRouter.get("/", (req, res) =>
   res.send({ title: "GET all subscription" })
 );
-subscriptionRouter.get("/:id", authenticateUser, getAllSubscriptionByUser);
+subscriptionRouter.get("/user/:id", authenticateUser, getUserSubscription);
 subscriptionRouter.post("/create", authenticateUser, createSubscription);
 subscriptionRouter.put("/:id", (req, res) =>
   res.send({ title: "UPDATE a subscription" })
